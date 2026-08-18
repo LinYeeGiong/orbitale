@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+
+import SiteShell from '../../layouts/SiteShell.astro';
+import {
+  getContentPath,
+  getTagArchive,
+  isPublishedChinese,
+  type ContentRecord,
+  type TagArchive,
+} from '../../lib/content';
+
+export async function getStaticPaths() {
+  const [notes, essays, daily] = await Promise.all([
+    getCollection('notes', isPublishedChinese),
+    getCollection('essays', isPublishedChinese),
+    getCollection('daily', isPublishedChinese),
+  ]);
+  const records: ContentRecord[] = [
+    ...notes.map(({ id, data }) => ({ id, kind: 'notes' as const, title: data.title, description: data.description, date: data.date, tags: data.tags })),
+    ...essays.map(({ id, data }) => ({ id, kind: 'essays' as const, title: data.title, description: data.description, date: data.date, tags: data.tags })),
+    ...daily.map(({ id, data }) => ({ id, kind: 'daily' as const, title: data.title, description: data.description, date: data.date, tags: data.tags })),
+  ];
+  const archives = getTagArchive(records);
+  return archives.map((archive) => ({ params: { tag: archive.tag }, props: { archive } }));
+}
+
+interface Props {
+  archive: TagArchive;
+}
+
+const { archive } = Astro.props as Props;
+const kindLabels = { notes: 'NOTE', essays: 'ESSAY', daily: 'DAILY' } as const;
+---
+
+<SiteShell title={`#${archive.tag}`} description={`标签 ${archive.tag} 下的全部公开内容。`}>
+  <main class="page-main">
+    <header class="page-heading"><span>TAG ARCHIVE · {archive.entries.length} ENTRIES</span><h1>#{archive.tag}</h1></header>
+    <section class="content-list" aria-label={`标签 ${archive.tag} 的内容`}>
+      {archive.entries.map((entry) => (
+        <article class="content-row">
+          <time datetime={entry.date.toISOString()}>{entry.date.toLocaleDateString('zh-CN')}</time>
+          <a class="content-copy" href={getContentPath(entry.kind, entry.id)}><h2>{entry.title}</h2><p>{entry.description}</p></a>
+          <small>{kindLabels[entry.kind]} ↗</small>
+        </article>
+      ))}
+    </section>
+  </main>
+</SiteShell>

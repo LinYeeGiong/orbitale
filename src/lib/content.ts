@@ -25,6 +25,11 @@ export interface ExplorationFieldStats extends ExplorationFieldDefinition {
   latest: string | null;
 }
 
+export interface TagArchive {
+  tag: string;
+  entries: ContentRecord[];
+}
+
 interface PublishableEntry {
   data: {
     published: boolean;
@@ -77,4 +82,21 @@ export function buildExplorationStats(
 
 export function isPublishedChinese(entry: PublishableEntry): boolean {
   return entry.data.published && entry.data.lang === 'zh';
+}
+
+export function getTagArchive(records: readonly ContentRecord[]): TagArchive[] {
+  const groups = new Map<string, TagArchive>();
+
+  for (const record of records) {
+    for (const tag of record.tags) {
+      const key = tag.toLocaleLowerCase();
+      const archive = groups.get(key) ?? { tag, entries: [] };
+      archive.entries.push(record);
+      groups.set(key, archive);
+    }
+  }
+
+  return [...groups.values()]
+    .map((archive) => ({ ...archive, entries: sortContentRecords(archive.entries) }))
+    .sort((left, right) => left.tag.localeCompare(right.tag, 'zh-CN'));
 }

@@ -4,6 +4,7 @@ import {
   buildExplorationStats,
   getAdjacentRecords,
   getContentPath,
+  getTagArchive,
   isPublishedChinese,
   sortContentRecords,
   type ContentRecord,
@@ -107,5 +108,16 @@ describe('content model', () => {
     expect(isPublishedChinese({ data: { published: true, lang: 'zh' } })).toBe(true);
     expect(isPublishedChinese({ data: { published: false, lang: 'zh' } })).toBe(false);
     expect(isPublishedChinese({ data: { published: true, lang: 'en' } })).toBe(false);
+  });
+
+  it('groups tags case-insensitively while preserving their first display spelling', () => {
+    const archive = getTagArchive([
+      ...records,
+      { id: 'lowercase-ai', kind: 'notes', title: 'Lowercase AI', description: 'Case test', date: new Date('2026-08-01'), tags: ['ai'] },
+    ]);
+    const ai = archive.find(({ tag }) => tag === 'AI');
+
+    expect(ai?.entries.map(({ id }) => id)).toEqual(['agent-memory', '2026-08-17', 'lowercase-ai']);
+    expect(archive.filter(({ tag }) => tag.toLocaleLowerCase() === 'ai')).toHaveLength(1);
   });
 });
