@@ -152,14 +152,14 @@ function summary(day?: ActivityDay) {
   .garden { border-top: 1px solid var(--line); padding: 30px 0 8px; }
   .garden > header { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
   .garden h2 { margin: 0; font: 500 25px 'Noto Serif SC', serif; }
-  .garden header span, .panel-label, .heat-foot { color: var(--muted); font: 400 10px 'DM Mono', monospace; }
+  .garden header span, .panel-label, .heat-foot { color: var(--muted); font: 400 11px 'DM Mono', monospace; }
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); }
   .stats a { min-height: 96px; padding: 17px 19px; border-right: 1px solid var(--line); transition: background .2s ease; }
   .stats a:last-child { border-right: 0; }
   .stats a:hover { background: var(--soft); }
-  .stats small { display: block; color: var(--muted); font: 400 10px 'DM Mono', monospace; margin-bottom: 9px; }
+  .stats small { display: block; color: var(--muted); font: 400 11px 'DM Mono', monospace; margin-bottom: 9px; }
   .stats strong { font: 500 29px 'DM Mono', monospace; }
-  .stats a > span { margin-left: 5px; color: var(--muted); font-size: 10px; }
+  .stats a > span { margin-left: 5px; color: var(--muted); font-size: 11px; }
   .data-grid { display: grid; grid-template-columns: .72fr 1.28fr; border: 1px solid var(--line); border-top: 0; }
   .tag-panel, .heat-panel { padding: 23px 22px; min-width: 0; }
   .tag-panel { border-right: 1px solid var(--line); }
@@ -167,7 +167,7 @@ function summary(day?: ActivityDay) {
   .tag-cloud { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 13px; margin: 24px 0 20px; }
   .tag-cloud a { color: var(--muted); font-size: calc(11px + var(--weight) * 3px); }
   .tag-cloud a:hover { color: var(--coral); }
-  .tag-cloud sup { margin-left: 3px; font: 400 7px 'DM Mono', monospace; }
+  .tag-cloud sup { margin-left: 3px; font: 400 9px 'DM Mono', monospace; }
   .tag-panel p { margin: 0; color: var(--muted); font-size: 11px; }
   .heat-panel { position: relative; }
   .heatmap-scroll { margin: 25px 0 14px; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
@@ -180,16 +180,16 @@ function summary(day?: ActivityDay) {
   .heatmap button:hover, .heatmap button:focus-visible { position: relative; z-index: 2; transform: scale(1.55); box-shadow: 0 0 0 1px var(--bg), 0 0 0 2px var(--green), 0 4px 12px color-mix(in srgb, var(--green) 28%, transparent); outline: none; }
   .activity-tooltip { position: absolute; z-index: 5; left: var(--tooltip-left, 22px); top: var(--tooltip-top, 58px); width: min(230px, calc(100% - 16px)); padding: 13px 14px 11px; border: 1px solid color-mix(in srgb, var(--green) 42%, var(--line)); border-radius: 4px; background: color-mix(in srgb, var(--bg) 94%, var(--soft)); box-shadow: 0 12px 28px color-mix(in srgb, #000 18%, transparent); opacity: 0; visibility: hidden; transform: translateY(5px); pointer-events: none; transition: opacity .15s ease, transform .15s ease, visibility .15s; }
   .activity-tooltip[data-visible='true'] { opacity: 1; visibility: visible; transform: translateY(0); }
-  .activity-tooltip > span { display: block; margin-bottom: 5px; color: var(--green); font: 400 8px 'DM Mono', monospace; letter-spacing: .12em; }
+  .activity-tooltip > span { display: block; margin-bottom: 5px; color: var(--green); font: 400 10px 'DM Mono', monospace; letter-spacing: .12em; }
   .activity-tooltip > strong { display: block; color: var(--ink); font: 500 14px 'Noto Serif SC', serif; }
   .tooltip-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 11px 0 8px; padding-top: 9px; border-top: 1px solid var(--line); }
-  .tooltip-counts span { color: var(--muted); font: 400 9px 'DM Mono', monospace; white-space: nowrap; }
+  .tooltip-counts span { color: var(--muted); font: 400 11px 'DM Mono', monospace; white-space: nowrap; }
   .tooltip-counts i { display: inline-block; width: 5px; height: 5px; margin-right: 3px; border-radius: 50%; background: var(--green); }
   .tooltip-counts span:nth-child(2) i { background: var(--coral); }
   .tooltip-counts span:nth-child(3) i { background: var(--yellow); }
   .tooltip-counts b { color: var(--ink); font-weight: 500; }
-  .activity-tooltip p { margin: 0; color: var(--muted); font: 400 9px 'DM Mono', monospace; }
-  .heat-foot { display: flex; min-height: 16px; align-items: center; justify-content: space-between; gap: 14px; font-size: 9px; }
+  .activity-tooltip p { margin: 0; color: var(--muted); font: 400 11px 'DM Mono', monospace; }
+  .heat-foot { display: flex; min-height: 16px; align-items: center; justify-content: space-between; gap: 14px; font-size: 11px; }
   .heat-foot > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .heat-foot span:last-child { display: flex; flex: 0 0 auto; align-items: center; gap: 5px; }
   .heat-foot i { width: 9px; height: 9px; background: var(--soft); }
