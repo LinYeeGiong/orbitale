@@ -1,43 +1,83 @@
-# Astro Starter Kit: Minimal
+# Orbitale
 
-```sh
-npm create astro@latest -- --template minimal
+Orbitale is a Chinese-first Astro theme for Lin's personal digital garden. It combines technical notes, essays, short daily posts, an interactive exploration orbit, and a command-line navigation surface.
+
+## Current Milestone
+
+Version `0.1.0` includes:
+
+- Astro 7 static-site foundation.
+- Strict `notes`, `essays`, and `daily` content collections.
+- Interactive mouse-following exploration orbit.
+- Command terminal with `/home`, `/about`, `/notes`, `/essays`, `/daily`, `/explore`, `/help`, and `/clear`.
+- Chinese homepage, About, Notes, Essays, and Daily routes.
+- Tag constellation and writing activity overview.
+- Dark and light color modes.
+- Unit and Astro rendering tests.
+- GitHub Pages deployment workflow.
+
+## Local Development
+
+Requirements: Node.js `22.12.0` or newer and npm.
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The development server prints its local URL. Run the complete verification suite with:
 
-## 🚀 Project Structure
+```bash
+npm run verify
+```
 
-Inside of your Astro project, you'll see the following folders and files:
+## Content
+
+Content files live in:
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/content/notes/
+src/content/essays/
+src/content/daily/
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Publishable Markdown uses validated frontmatter:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```yaml
+---
+title: 让 Agent 记住真正重要的事
+description: 从短期上下文到长期可检索记忆。
+date: 2026-08-18
+tags: [AI, Agent, Memory]
+lang: zh
+published: true
+---
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+Files with `published: false` remain available locally but are excluded from public lists.
 
-## 🧞 Commands
+## GitHub Pages
 
-All commands are run from the root of the project, from a terminal:
+Push the repository as `username.github.io`, then enable **Settings → Pages → Source → GitHub Actions**. The first milestone targets a root user site at `https://username.github.io/`.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+For a local production build with an explicit URL:
 
-## 👀 Want to learn more?
+```bash
+PUBLIC_SITE_URL=https://username.github.io npm run build
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+PowerShell equivalent:
+
+```powershell
+$env:PUBLIC_SITE_URL='https://username.github.io'
+npm run build
+```
+
+## Next Milestones
+
+- Article detail routes and typography.
+- Obsidian publish synchronization and image copying.
+- Optional English translation routes.
+- RSS, sitemap, search, and tag archive pages.
+- Optional GitHub Pages project-site base paths.
+- Replace example GitHub identity and sample content with Lin's final information.

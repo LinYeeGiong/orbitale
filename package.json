@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest",
+    "verify": "npm test -- --run && npm run check && npm run build",
     "astro": "astro"
   },
   "dependencies": {
