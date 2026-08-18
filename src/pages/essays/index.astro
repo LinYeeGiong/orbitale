@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import SiteShell from '../../layouts/SiteShell.astro';
+
+const entries = (await getCollection('essays', ({ data }) => data.published && data.lang === 'zh')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<SiteShell title="随笔">
+  <main class="page-main">
+    <header class="page-heading"><span>03 / ESSAYS</span><h1>随笔</h1></header>
+    <section class="content-list" aria-label="随笔列表">
+      {entries.map((entry) => <article class="content-row"><time datetime={entry.data.date.toISOString()}>{entry.data.date.toLocaleDateString('zh-CN')}</time><div><h2>{entry.data.title}</h2><p>{entry.data.description}</p></div><small>ESSAY ↗</small></article>)}
+    </section>
+  </main>
+</SiteShell>

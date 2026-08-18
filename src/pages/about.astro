@@ -1,0 +1,34 @@
+---
+import SiteShell from '../layouts/SiteShell.astro';
+---
+
+<SiteShell title="关于我" description="关于 Lin 的研究、工程、写作与个人记录。">
+  <main class="page-main">
+    <header class="page-heading"><span>01 / ABOUT</span><h1>关于我</h1></header>
+    <section class="about-layout">
+      <nav aria-label="个人时间线"><a href="#now" aria-current="true">NOW</a><a href="#2025">2025</a><a href="#2024">2024</a><a href="#2023">2023</a></nav>
+      <article id="now">
+        <span>NOW · STILL LEARNING</span>
+        <h2>把研究、工程和写作连接起来</h2>
+        <p>我希望这个网站能诚实地保留过程：哪些问题已经解决，哪些想法仍在变化，以及每一次失败最终教会了我什么。</p>
+        <dl><div><dt>FOCUS</dt><dd>AI Agents</dd></div><div><dt>TOOL</dt><dd>Obsidian</dd></div><div><dt>STATUS</dt><dd>Building</dd></div></dl>
+      </article>
+    </section>
+  </main>
+</SiteShell>
+
+<style>
+  .about-layout { min-height: 480px; display: grid; grid-template-columns: .58fr 1.42fr; }
+  nav { padding: 36px 28px 0 0; border-right: 1px solid var(--line); display: grid; align-content: start; gap: 6px; }
+  nav a { padding: 10px 12px; color: var(--muted); font: 400 12px 'DM Mono', monospace; }
+  nav a[aria-current='true'] { color: var(--ink); background: var(--soft); }
+  article { padding: 42px 0 40px 42px; }
+  article > span { color: var(--cyan); font: 400 11px 'DM Mono', monospace; letter-spacing: .1em; }
+  h2 { max-width: 620px; margin: 18px 0; font: 500 30px/1.25 'Noto Serif SC', serif; }
+  p { max-width: 620px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+  dl { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); margin: 34px 0 0; }
+  dl div { padding: 19px; border-right: 1px solid var(--line); } dl div:last-child { border-right: 0; }
+  dt { margin-bottom: 8px; color: var(--muted); font: 400 10px 'DM Mono', monospace; } dd { margin: 0; font-size: 13px; }
+  @media (max-width: 700px) { .about-layout { grid-template-columns: 1fr; } nav { border-right: 0; border-bottom: 1px solid var(--line); display: flex; padding: 18px 0; overflow-x: auto; } article { padding: 32px 0 40px; } }
+  @media (max-width: 520px) { dl { grid-template-columns: 1fr; } dl div { border-right: 0; border-bottom: 1px solid var(--line); } }
+</style>

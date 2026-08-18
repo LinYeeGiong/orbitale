@@ -1,0 +1,77 @@
+---
+interface Props {
+  notes: number;
+  essays: number;
+  daily: number;
+  tags: Array<{ name: string; count: number }>;
+}
+
+const { notes, essays, daily, tags } = Astro.props;
+const heat = Array.from({ length: 168 }, (_, index) => ({
+  level: index % 11 === 0 ? 0 : (index * 7 + Math.floor(index / 9)) % 5,
+  label: `写作活动第 ${index + 1} 天`,
+}));
+---
+
+<section class="garden" aria-labelledby="garden-title">
+  <header><h2 id="garden-title">我的数字花园</h2><span>UPDATED 2026.08.18</span></header>
+  <div class="stats" aria-label="内容概览">
+    <a href="/notes/"><small>LEARNING NOTES</small><strong>{notes}</strong><span>篇</span></a>
+    <a href="/essays/"><small>ESSAYS</small><strong>{essays}</strong><span>篇</span></a>
+    <a href="/daily/"><small>DAILY</small><strong>{daily}</strong><span>条</span></a>
+    <a href="/about/"><small>WRITING DAYS</small><strong>126</strong><span>天</span></a>
+  </div>
+  <div class="data-grid">
+    <section class="tag-panel" aria-labelledby="tag-title">
+      <div class="panel-label"><span id="tag-title">TAG CONSTELLATION</span><span>{tags.length} TAGS</span></div>
+      <div class="tag-cloud">
+        {tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag.name)}/`} style={`--weight:${Math.min(4, tag.count)}`}>{tag.name}<sup>{tag.count}</sup></a>)}
+      </div>
+      <p>标签会随着已发布内容自动重新计算权重。</p>
+    </section>
+    <section class="heat-panel" aria-labelledby="heat-title">
+      <div class="panel-label"><span id="heat-title">WRITING ACTIVITY · 24 WEEKS</span><span>ALL CONTENT</span></div>
+      <div class="heatmap" role="img" aria-label="最近 24 周写作热力图">
+        {heat.map((cell) => <span data-level={cell.level} title={cell.label}></span>)}
+      </div>
+      <div class="heat-foot"><span>2026.08.18 · 3 次记录</span><span>少 <i></i><i></i><i></i><i></i> 多</span></div>
+    </section>
+  </div>
+</section>
+
+<style>
+  .garden { border-top: 1px solid var(--line); padding: 30px 0 8px; }
+  .garden > header { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+  .garden h2 { margin: 0; font: 500 25px 'Noto Serif SC', serif; }
+  .garden header span, .panel-label, .heat-foot { color: var(--muted); font: 400 10px 'DM Mono', monospace; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); }
+  .stats a { min-height: 96px; padding: 17px 19px; border-right: 1px solid var(--line); transition: background .2s ease; }
+  .stats a:last-child { border-right: 0; }
+  .stats a:hover { background: var(--soft); }
+  .stats small { display: block; color: var(--muted); font: 400 10px 'DM Mono', monospace; margin-bottom: 9px; }
+  .stats strong { font: 500 29px 'DM Mono', monospace; }
+  .stats a > span { margin-left: 5px; color: var(--muted); font-size: 10px; }
+  .data-grid { display: grid; grid-template-columns: .72fr 1.28fr; border: 1px solid var(--line); border-top: 0; }
+  .tag-panel, .heat-panel { padding: 23px 22px; min-width: 0; }
+  .tag-panel { border-right: 1px solid var(--line); }
+  .panel-label { display: flex; justify-content: space-between; gap: 12px; letter-spacing: .07em; }
+  .tag-cloud { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 13px; margin: 24px 0 20px; }
+  .tag-cloud a { color: var(--muted); font-size: calc(11px + var(--weight) * 3px); }
+  .tag-cloud a:hover { color: var(--coral); }
+  .tag-cloud sup { margin-left: 3px; font: 400 7px 'DM Mono', monospace; }
+  .tag-panel p { margin: 0; color: var(--muted); font-size: 11px; }
+  .heatmap { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); grid-auto-columns: 12px; gap: 3px; margin: 25px 0 14px; overflow: hidden; }
+  .heatmap span { width: 12px; height: 12px; border-radius: 2px; background: var(--soft); }
+  .heatmap span[data-level='1'] { background: color-mix(in srgb, var(--green) 30%, var(--soft)); }
+  .heatmap span[data-level='2'] { background: color-mix(in srgb, var(--green) 52%, var(--soft)); }
+  .heatmap span[data-level='3'] { background: color-mix(in srgb, var(--green) 74%, var(--soft)); }
+  .heatmap span[data-level='4'] { background: var(--green); }
+  .heat-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 9px; }
+  .heat-foot span:last-child { display: flex; align-items: center; gap: 5px; }
+  .heat-foot i { width: 9px; height: 9px; background: var(--soft); }
+  .heat-foot i:nth-child(2) { background: color-mix(in srgb, var(--green) 38%, var(--soft)); }
+  .heat-foot i:nth-child(3) { background: color-mix(in srgb, var(--green) 67%, var(--soft)); }
+  .heat-foot i:nth-child(4) { background: var(--green); }
+  @media (max-width: 820px) { .data-grid { grid-template-columns: 1fr; } .tag-panel { border-right: 0; border-bottom: 1px solid var(--line); } }
+  @media (max-width: 520px) { .stats { grid-template-columns: repeat(2, 1fr); } .stats a:nth-child(2) { border-right: 0; } .stats a:nth-child(-n+2) { border-bottom: 1px solid var(--line); } .heatmap { grid-template-rows: repeat(7, 10px); grid-auto-columns: 10px; } .heatmap span { width: 10px; height: 10px; } }
+</style>

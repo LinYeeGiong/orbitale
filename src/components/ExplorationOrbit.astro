@@ -1,0 +1,168 @@
+---
+const fields = [
+  { key: 'agents', label: 'AI AGENTS', count: 18, title: '智能体与协作', description: '记录 Agent Memory、工具调用，以及人如何与 AI 共同完成长期工作。', latest: '让 Agent 记住真正重要的事', href: '/notes/' },
+  { key: 'systems', label: '系统', count: 12, title: '系统与工程', description: '从实验环境到稳定部署，留下故障、取舍和可复用的工程判断。', latest: '一次失败部署留下的检查清单', href: '/notes/' },
+  { key: 'writing', label: '写作', count: 16, title: '写作与思考', description: '用公开写作整理尚未完成的想法，也记录观点如何随时间改变。', latest: '写博客不是为了证明已经想明白', href: '/essays/' },
+  { key: 'reading', label: '阅读', count: 14, title: '阅读与摘记', description: '不只收藏答案：重述一本书，连接旧问题，再形成自己的判断。', latest: '读《设计心理学》', href: '/notes/' },
+  { key: 'life', label: '生活影像', count: 23, title: '生活与影像', description: '实验室、街道、光线和微小日常，构成技术之外的生活切片。', latest: '实验室的下午四点', href: '/daily/' },
+] as const;
+---
+
+<aside class="orbit-panel" data-exploration-orbit aria-label="Lin 的探索方向">
+  <div class="orbit" data-orbit-surface>
+    <span class="ring ring-outer" aria-hidden="true"></span>
+    <span class="ring ring-inner" aria-hidden="true"></span>
+    <span class="active-beam" aria-hidden="true"></span>
+    <span class="pointer" data-orbit-pointer aria-hidden="true"></span>
+    <div class="orbit-core"><strong>LIN</strong><span>05 FIELDS / LIVE</span></div>
+    {fields.map((field, index) => (
+      <button
+        type="button"
+        class="topic"
+        data-topic={field.key}
+        data-index={index + 1}
+        data-count={field.count}
+        data-title={field.title}
+        data-description={field.description}
+        data-latest={field.latest}
+        data-href={field.href}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+      >
+        <span class="topic-dot" aria-hidden="true"></span>
+        <span>{field.label} <b>{field.count}</b></span>
+      </button>
+    ))}
+  </div>
+  <section class="field-detail" aria-live="polite">
+    <div class="field-meta"><span data-field-index>FIELD 01 / 05</span><span data-field-state>当前方向</span></div>
+    <div class="field-title"><h2 data-field-title>智能体与协作</h2><strong><span data-field-count>18</span> <small>篇文章</small></strong></div>
+    <p data-field-description>记录 Agent Memory、工具调用，以及人如何与 AI 共同完成长期工作。</p>
+    <div class="field-foot"><span data-field-latest>最近更新 · 让 Agent 记住真正重要的事</span><a data-field-link href="/notes/">查看方向 →</a></div>
+  </section>
+</aside>
+
+<script>
+  import { calculatePointer } from '../lib/orbit';
+
+  document.querySelectorAll<HTMLElement>('[data-exploration-orbit]').forEach((root) => {
+    const surface = root.querySelector<HTMLElement>('[data-orbit-surface]');
+    const pointer = root.querySelector<HTMLElement>('[data-orbit-pointer]');
+    const topics = [...root.querySelectorAll<HTMLButtonElement>('[data-topic]')];
+    if (!surface || !pointer || topics.length === 0) return;
+
+    let active = topics[0];
+
+    const pointTo = (x: number, y: number) => {
+      const rect = surface.getBoundingClientRect();
+      const geometry = calculatePointer(
+        { x: rect.width / 2, y: rect.height / 2 },
+        { x, y },
+        rect.width * 0.72,
+      );
+      pointer.style.setProperty('--pointer-angle', `${geometry.angle}deg`);
+      pointer.style.setProperty('--pointer-length', `${Math.max(24, geometry.length)}px`);
+    };
+
+    const pointToTopic = (topic: HTMLButtonElement) => {
+      const surfaceRect = surface.getBoundingClientRect();
+      const topicRect = topic.getBoundingClientRect();
+      pointTo(
+        topicRect.left - surfaceRect.left + topicRect.width / 2,
+        topicRect.top - surfaceRect.top + topicRect.height / 2,
+      );
+    };
+
+    const renderTopic = (topic: HTMLButtonElement, preview: boolean) => {
+      root.querySelector<HTMLElement>('[data-field-index]')!.textContent = `FIELD ${String(topic.dataset.index).padStart(2, '0')} / 05`;
+      root.querySelector<HTMLElement>('[data-field-state]')!.textContent = preview ? '预览方向' : '当前方向';
+      root.querySelector<HTMLElement>('[data-field-title]')!.textContent = topic.dataset.title ?? '';
+      root.querySelector<HTMLElement>('[data-field-count]')!.textContent = topic.dataset.count ?? '0';
+      root.querySelector<HTMLElement>('[data-field-description]')!.textContent = topic.dataset.description ?? '';
+      root.querySelector<HTMLElement>('[data-field-latest]')!.textContent = `最近更新 · ${topic.dataset.latest ?? ''}`;
+      root.querySelector<HTMLAnchorElement>('[data-field-link]')!.href = topic.dataset.href ?? '/';
+    };
+
+    surface.addEventListener('pointerenter', () => surface.dataset.tracking = 'true');
+    surface.addEventListener('pointermove', (event) => {
+      const rect = surface.getBoundingClientRect();
+      pointTo(event.clientX - rect.left, event.clientY - rect.top);
+    });
+    surface.addEventListener('pointerleave', () => {
+      surface.dataset.tracking = 'false';
+      pointToTopic(active);
+      renderTopic(active, false);
+    });
+
+    topics.forEach((topic) => {
+      const preview = () => { renderTopic(topic, topic !== active); pointToTopic(topic); };
+      topic.addEventListener('mouseenter', preview);
+      topic.addEventListener('focus', preview);
+      topic.addEventListener('click', () => {
+        active = topic;
+        topics.forEach((item) => item.setAttribute('aria-pressed', String(item === topic)));
+        renderTopic(topic, false);
+        pointToTopic(topic);
+      });
+      topic.addEventListener('blur', () => renderTopic(active, false));
+    });
+
+    window.addEventListener('orbitale:explore', () => {
+      active = topics[0];
+      topics.forEach((item) => item.setAttribute('aria-pressed', String(item === active)));
+      renderTopic(active, false);
+      pointToTopic(active);
+      surface.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.025)' }, { transform: 'scale(1)' }], { duration: 650, easing: 'ease-out' });
+    });
+
+    requestAnimationFrame(() => pointToTopic(active));
+  });
+</script>
+
+<style>
+  .orbit-panel { min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: 42px 0 38px 30px; }
+  .orbit { --pointer-angle: -90deg; --pointer-length: 120px; width: min(100%, 310px); aspect-ratio: 1; align-self: center; position: relative; display: grid; place-items: center; isolation: isolate; }
+  .orbit::before { content: ''; position: absolute; inset: 38%; border-radius: 50%; background: color-mix(in srgb, var(--cyan) 8%, transparent); box-shadow: 0 0 42px color-mix(in srgb, var(--cyan) 14%, transparent); }
+  .ring { position: absolute; border: 1px solid var(--line); border-radius: 50%; }
+  .ring::before, .ring::after { content: ''; position: absolute; width: 7px; height: 7px; border: 1px solid var(--muted); background: var(--bg); transform: rotate(45deg); }
+  .ring::before { top: 8%; left: 18%; }
+  .ring::after { right: 10%; bottom: 20%; }
+  .ring-outer { inset: 10%; }
+  .ring-inner { inset: 25%; border-color: var(--cyan); opacity: .72; }
+  .ring-inner::before { top: auto; bottom: -4px; left: calc(50% - 4px); border-color: var(--cyan); }
+  .ring-inner::after { top: calc(50% - 4px); right: -4px; bottom: auto; border-color: var(--cyan); }
+  .active-beam { position: absolute; z-index: -1; left: 50%; top: 50%; width: 39%; height: 1px; background: var(--cyan); opacity: .13; transform: rotate(-90deg); transform-origin: left center; }
+  .pointer { position: absolute; z-index: 1; left: 50%; top: 50%; width: var(--pointer-length); height: 1px; background: linear-gradient(90deg, color-mix(in srgb, var(--cyan) 12%, transparent), var(--cyan)); opacity: .76; pointer-events: none; transform: rotate(var(--pointer-angle)); transform-origin: left center; transition: width .16s ease-out, transform .16s ease-out, opacity .2s ease; }
+  .pointer::before { content: ''; position: absolute; width: 7px; height: 7px; right: -3px; top: -3px; border: 1px solid var(--cyan); border-radius: 50%; background: var(--bg); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cyan) 16%, transparent), 0 0 16px color-mix(in srgb, var(--cyan) 38%, transparent); }
+  .pointer::after { content: ''; position: absolute; width: 3px; height: 3px; left: -1px; top: -1px; border-radius: 50%; background: var(--cyan); }
+  .orbit[data-tracking='true'] .pointer { opacity: 1; }
+  .orbit[data-tracking='true'] .pointer::before { animation: pointer-pulse 1.05s ease-in-out infinite; }
+  @keyframes pointer-pulse { 50% { transform: scale(1.35); box-shadow: 0 0 0 8px color-mix(in srgb, var(--cyan) 8%, transparent), 0 0 24px color-mix(in srgb, var(--cyan) 46%, transparent); } }
+  .orbit-core { position: relative; z-index: 2; display: grid; place-items: center; gap: 7px; }
+  .orbit-core strong { font: 500 45px/1 'DM Mono', monospace; letter-spacing: .08em; }
+  .orbit-core span { color: var(--muted); font: 400 8px 'DM Mono', monospace; letter-spacing: .12em; }
+  .topic { position: absolute; z-index: 3; display: flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--muted); padding: 7px; white-space: nowrap; font: 400 9px 'DM Mono', monospace; transition: color .2s ease, transform .2s ease; }
+  .topic b { display: inline-grid; place-items: center; min-width: 19px; height: 16px; margin-left: 3px; padding: 0 3px; background: var(--soft); color: var(--ink); font-size: 8px; opacity: 0; transition: opacity .2s ease; }
+  .topic-dot { width: 8px; height: 8px; border: 1px solid currentColor; border-radius: 50%; background: var(--bg); transition: background .2s ease, box-shadow .2s ease; }
+  .topic:hover, .topic:focus-visible, .topic[aria-pressed='true'] { color: var(--ink); }
+  .topic:hover b, .topic:focus-visible b, .topic[aria-pressed='true'] b { opacity: 1; }
+  .topic:hover .topic-dot, .topic:focus-visible .topic-dot, .topic[aria-pressed='true'] .topic-dot { background: var(--coral); border-color: var(--coral); box-shadow: 0 0 0 5px color-mix(in srgb, var(--coral) 16%, transparent); }
+  .topic[data-topic='agents'] { top: 0; left: 50%; transform: translateX(-50%); }
+  .topic[data-topic='systems'] { top: 29%; right: -8px; flex-direction: row-reverse; }
+  .topic[data-topic='writing'] { right: 7%; bottom: 5%; flex-direction: row-reverse; }
+  .topic[data-topic='reading'] { left: 5%; bottom: 6%; }
+  .topic[data-topic='life'] { top: 31%; left: -8px; }
+  .field-detail { border-top: 1px solid var(--line); padding-top: 17px; min-height: 151px; }
+  .field-meta, .field-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font: 400 9px 'DM Mono', monospace; }
+  .field-meta span:last-child { color: var(--cyan); }
+  .field-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 12px 0 7px; }
+  .field-title h2 { margin: 0; font: 500 20px 'Noto Serif SC', serif; }
+  .field-title strong { color: var(--coral); font: 500 21px 'DM Mono', monospace; white-space: nowrap; }
+  .field-title small { color: var(--muted); font-size: 8px; font-weight: 400; }
+  .field-detail p { margin: 0; min-height: 35px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+  .field-foot { margin-top: 10px; font-size: 8px; }
+  .field-foot span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .field-foot a { flex: 0 0 auto; color: var(--ink); }
+  .field-foot a:hover { color: var(--coral); }
+  @media (max-width: 820px) { .orbit-panel { display: grid; grid-template-columns: 280px 1fr; align-items: center; gap: 32px; padding: 32px 0; } .orbit { width: 270px; } }
+  @media (max-width: 520px) { .orbit-panel { grid-template-columns: 1fr; } .orbit { width: min(100%, 270px); } }
+</style>

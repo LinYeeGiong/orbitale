@@ -1,0 +1,33 @@
+---
+import { siteConfig } from '../config/site';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a class="site-brand" href="/" aria-label="返回首页">
+    <span class="site-signal" aria-hidden="true"></span>
+    <span>LIN / LAB NOTES</span>
+  </a>
+  <nav class="site-nav" aria-label="主导航">
+    {siteConfig.navigation.map((item) => (
+      <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a>
+    ))}
+  </nav>
+  <div class="site-tools">
+    <button type="button" data-language-toggle aria-label="切换语言">中 / EN</button>
+    <button type="button" data-theme-toggle aria-label="切换主题">主题</button>
+  </div>
+</header>
+
+<script>
+  const themeButton = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const savedTheme = localStorage.getItem('orbitale-theme');
+  if (savedTheme === 'light') document.documentElement.dataset.theme = 'light';
+
+  themeButton?.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('orbitale-theme', next);
+  });
+</script>

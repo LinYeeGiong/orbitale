@@ -1,0 +1,39 @@
+---
+import Header from '../components/Header.astro';
+import { siteConfig } from '../config/site';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = siteConfig.title, description = siteConfig.description } = Astro.props;
+const pageTitle = title === siteConfig.title ? title : `${title} · ${siteConfig.name}`;
+---
+
+<!doctype html>
+<html lang={siteConfig.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      const storedTheme = localStorage.getItem('orbitale-theme');
+      if (storedTheme === 'light') document.documentElement.dataset.theme = 'light';
+    </script>
+  </head>
+  <body>
+    <div class="site-frame">
+      <Header />
+      <slot />
+      <footer class="site-footer">
+        <span>© 2026 LIN · SHANGHAI / UTC+8</span>
+        <nav aria-label="页脚导航"><a href="https://github.com/" rel="me">GITHUB</a><a href="/rss.xml">RSS</a><a href="#top">TOP ↑</a></nav>
+      </footer>
+    </div>
+  </body>
+</html>

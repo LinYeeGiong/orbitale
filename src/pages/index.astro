@@ -1,17 +1,38 @@
 ---
+import { getCollection } from 'astro:content';
 
+import CommandTerminal from '../components/CommandTerminal.astro';
+import ContentOverview from '../components/ContentOverview.astro';
+import ExplorationOrbit from '../components/ExplorationOrbit.astro';
+import Hero from '../components/Hero.astro';
+import SiteShell from '../layouts/SiteShell.astro';
+
+const [notes, essays, daily] = await Promise.all([
+  getCollection('notes', ({ data }) => data.published && data.lang === 'zh'),
+  getCollection('essays', ({ data }) => data.published && data.lang === 'zh'),
+  getCollection('daily', ({ data }) => data.published && data.lang === 'zh'),
+]);
+
+const tagCounts = new Map<string, number>();
+for (const entry of [...notes, ...essays, ...daily]) {
+  for (const tag of entry.data.tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+}
+const tags = [...tagCounts.entries()]
+  .map(([name, count]) => ({ name, count }))
+  .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name, 'zh-CN'));
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<SiteShell>
+  <main class="page-main" id="top">
+    <div class="home-grid">
+      <Hero><CommandTerminal /></Hero>
+      <ExplorationOrbit />
+    </div>
+    <ContentOverview notes={notes.length} essays={essays.length} daily={daily.length} tags={tags} />
+  </main>
+</SiteShell>
+
+<style>
+  .home-grid { min-height: 670px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(290px, .75fr); }
+  @media (max-width: 820px) { .home-grid { grid-template-columns: 1fr; } }
+</style>

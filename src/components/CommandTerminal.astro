@@ -1,0 +1,113 @@
+<section class="terminal" data-command-terminal aria-label="Lin command line">
+  <header><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="title">lin@garden — zsh</span><span class="session">SESSION 01</span></header>
+  <div class="terminal-body" data-terminal-output>
+    <div class="line"><span class="prompt">lin@lab ~ %</span><span>/help</span></div>
+    <div class="output">routes: /about /notes /essays /daily /explore · /clear</div>
+    <form data-terminal-form>
+      <span class="prompt">lin@lab ~ %</span>
+      <input data-terminal-input aria-label="Terminal command" autocomplete="off" spellcheck="false" placeholder="try /explore" />
+      <span class="block-cursor" data-terminal-cursor aria-hidden="true"></span>
+    </form>
+  </div>
+  <div class="shortcuts" aria-label="快捷命令">
+    {['/about', '/notes', '/essays', '/daily', '/explore'].map((command) => <button type="button" data-command={command}>{command}</button>)}
+  </div>
+</section>
+
+<script>
+  import { parseTerminalCommand } from '../lib/terminal';
+
+  document.querySelectorAll<HTMLElement>('[data-command-terminal]').forEach((root) => {
+    const outputRoot = root.querySelector<HTMLElement>('[data-terminal-output]');
+    const form = root.querySelector<HTMLFormElement>('[data-terminal-form]');
+    const input = root.querySelector<HTMLInputElement>('[data-terminal-input]');
+    const cursor = root.querySelector<HTMLElement>('[data-terminal-cursor]');
+    if (!outputRoot || !form || !input || !cursor) return;
+
+    const history: string[] = [];
+    let historyIndex = 0;
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    const syncCursor = () => {
+      if (!context) return;
+      context.font = getComputedStyle(input).font;
+      const promptWidth = form.querySelector<HTMLElement>('.prompt')?.getBoundingClientRect().width ?? 0;
+      cursor.style.left = `${promptWidth + 8 + context.measureText(input.value).width}px`;
+    };
+
+    const print = (command: string, response: string) => {
+      const line = document.createElement('div');
+      line.className = 'line';
+      const prompt = document.createElement('span');
+      prompt.className = 'prompt';
+      prompt.textContent = 'lin@lab ~ %';
+      const value = document.createElement('span');
+      value.textContent = command;
+      line.append(prompt, value);
+      const result = document.createElement('div');
+      result.className = 'output';
+      result.textContent = response;
+      outputRoot.insertBefore(line, form);
+      outputRoot.insertBefore(result, form);
+    };
+
+    const run = (raw: string) => {
+      if (!raw.trim()) return;
+      const result = parseTerminalCommand(raw);
+      history.push(result.command);
+      historyIndex = history.length;
+
+      if (result.kind === 'navigate') {
+        print(result.command, `opening ${result.route}`);
+        window.setTimeout(() => window.location.assign(result.route), 180);
+      } else if (result.kind === 'explore') {
+        print(result.command, 'exploration orbit activated · AI Agents / 18 articles');
+        window.dispatchEvent(new CustomEvent('orbitale:explore'));
+      } else if (result.kind === 'help') {
+        print(result.command, `available: ${result.commands.join(' ')}`);
+      } else if (result.kind === 'clear') {
+        outputRoot.querySelectorAll('.line, .output').forEach((item) => item.remove());
+      } else {
+        print(result.command, `command not found: ${result.command} · type /help`);
+      }
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      run(input.value);
+      input.value = '';
+      syncCursor();
+    });
+    input.addEventListener('input', syncCursor);
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp') { event.preventDefault(); historyIndex = Math.max(0, historyIndex - 1); input.value = history[historyIndex] ?? ''; syncCursor(); }
+      if (event.key === 'ArrowDown') { event.preventDefault(); historyIndex = Math.min(history.length, historyIndex + 1); input.value = history[historyIndex] ?? ''; syncCursor(); }
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-command]').forEach((button) => button.addEventListener('click', () => { run(button.dataset.command ?? ''); input.focus(); }));
+    root.addEventListener('click', (event) => { if (!(event.target as Element).closest('button')) input.focus(); });
+    requestAnimationFrame(syncCursor);
+  });
+</script>
+
+<style>
+  .terminal { margin-top: 28px; max-width: 700px; border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 86%, transparent); box-shadow: 0 18px 48px color-mix(in srgb, var(--bg) 56%, transparent); }
+  header { height: 36px; display: flex; align-items: center; gap: 10px; padding: 0 13px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--soft) 35%, transparent); color: var(--muted); font: 400 9px 'DM Mono', monospace; }
+  .lights { display: flex; gap: 5px; }
+  .lights i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+  .lights i:first-child { background: var(--coral); } .lights i:nth-child(2) { background: var(--yellow); } .lights i:nth-child(3) { background: var(--green); }
+  .title { flex: 1; text-align: center; letter-spacing: .06em; color: color-mix(in srgb, var(--ink) 72%, var(--muted)); }
+  .session { color: var(--cyan); font-size: 8px; }
+  .terminal-body { min-height: 114px; padding: 15px 16px 11px; font: 400 10px/1.75 'DM Mono', monospace; }
+  .line { display: flex; gap: 8px; align-items: baseline; }
+  .prompt { color: var(--green); white-space: nowrap; }
+  .output { margin: 2px 0 8px; color: var(--cyan); opacity: .86; white-space: pre-wrap; }
+  form { position: relative; display: flex; gap: 8px; align-items: center; }
+  input { min-width: 0; flex: 1; border: 0; outline: 0; padding: 0; background: transparent; color: var(--ink); font: 500 10px/1.75 'DM Mono', monospace; caret-color: transparent; }
+  input::placeholder { color: color-mix(in srgb, var(--muted) 60%, transparent); }
+  .block-cursor { position: absolute; left: 0; top: 50%; width: 3px; height: 14px; background: var(--cyan); box-shadow: 0 0 9px color-mix(in srgb, var(--cyan) 58%, transparent); transform: translateY(-50%); pointer-events: none; animation: cursor-blink 1s steps(1, end) infinite; }
+  @keyframes cursor-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: .12; } }
+  .shortcuts { display: flex; flex-wrap: wrap; gap: 6px; padding: 9px 13px 11px; border-top: 1px solid var(--line); }
+  .shortcuts button { border: 1px solid color-mix(in srgb, var(--line) 78%, transparent); background: color-mix(in srgb, var(--soft) 28%, transparent); color: var(--muted); padding: 3px 7px; font: 400 8px 'DM Mono', monospace; transition: color .2s ease, border-color .2s ease, background .2s ease; }
+  .shortcuts button:hover { color: var(--cyan); border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 8%, transparent); }
+</style>
