@@ -1,7 +1,21 @@
 {
   "name": "orbitale",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "A Chinese-first Astro theme for personal digital gardens.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinYeeGiong/orbitale.git"
+  },
+  "homepage": "https://github.com/LinYeeGiong/orbitale#readme",
+  "keywords": [
+    "astro",
+    "astro-theme",
+    "blog",
+    "digital-garden",
+    "chinese"
+  ],
   "engines": {
     "node": ">=22.12.0"
   },
