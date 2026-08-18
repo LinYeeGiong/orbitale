@@ -1,25 +1,41 @@
 ---
+import type { ActivityDay } from '../lib/activity';
+
 interface Props {
   notes: number;
   essays: number;
   daily: number;
   tags: Array<{ name: string; count: number }>;
+  activity: ActivityDay[];
+  writingDays: number;
+  updatedAt: string;
 }
 
-const { notes, essays, daily, tags } = Astro.props;
-const heat = Array.from({ length: 168 }, (_, index) => ({
-  level: index % 11 === 0 ? 0 : (index * 7 + Math.floor(index / 9)) % 5,
-  label: `写作活动第 ${index + 1} 天`,
-}));
+const { notes, essays, daily, tags, activity, writingDays, updatedAt } = Astro.props;
+const latestDay = activity.at(-1);
+
+function chineseDate(date: string) {
+  const [year, month, day] = date.split('-').map(Number);
+  return `${year}年${month}月${day}日`;
+}
+
+function accessibleLabel(day: ActivityDay) {
+  return `${chineseDate(day.date)}，笔记 ${day.notes} 篇，随笔 ${day.essays} 篇，Daily ${day.daily} 条，共 ${day.total} 次发布`;
+}
+
+function summary(day?: ActivityDay) {
+  if (!day) return '暂无发布记录';
+  return `${day.date.replaceAll('-', '.')} · 笔记 ${day.notes} · 随笔 ${day.essays} · Daily ${day.daily}`;
+}
 ---
 
 <section class="garden" aria-labelledby="garden-title">
-  <header><h2 id="garden-title">我的数字花园</h2><span>UPDATED 2026.08.18</span></header>
+  <header><h2 id="garden-title">我的数字花园</h2><span>UPDATED {updatedAt}</span></header>
   <div class="stats" aria-label="内容概览">
     <a href="/notes/"><small>LEARNING NOTES</small><strong>{notes}</strong><span>篇</span></a>
     <a href="/essays/"><small>ESSAYS</small><strong>{essays}</strong><span>篇</span></a>
     <a href="/daily/"><small>DAILY</small><strong>{daily}</strong><span>条</span></a>
-    <a href="/about/"><small>WRITING DAYS</small><strong>126</strong><span>天</span></a>
+    <a href="/about/"><small>WRITING DAYS</small><strong>{writingDays}</strong><span>天</span></a>
   </div>
   <div class="data-grid">
     <section class="tag-panel" aria-labelledby="tag-title">
@@ -29,15 +45,108 @@ const heat = Array.from({ length: 168 }, (_, index) => ({
       </div>
       <p>标签会随着已发布内容自动重新计算权重。</p>
     </section>
-    <section class="heat-panel" aria-labelledby="heat-title">
+    <section class="heat-panel" aria-labelledby="heat-title" data-activity-panel>
       <div class="panel-label"><span id="heat-title">WRITING ACTIVITY · 24 WEEKS</span><span>ALL CONTENT</span></div>
-      <div class="heatmap" role="img" aria-label="最近 24 周写作热力图">
-        {heat.map((cell) => <span data-level={cell.level} title={cell.label}></span>)}
+      <div class="heatmap-scroll" data-activity-scroll>
+        <div class="heatmap" role="group" aria-label="最近 24 周写作热力图">
+          {activity.map((day) => (
+            <button
+              type="button"
+              data-activity-cell
+              data-level={day.level}
+              data-date={day.date}
+              data-notes={day.notes}
+              data-essays={day.essays}
+              data-daily={day.daily}
+              data-total={day.total}
+              aria-label={accessibleLabel(day)}
+            ></button>
+          ))}
+        </div>
       </div>
-      <div class="heat-foot"><span>2026.08.18 · 3 次记录</span><span>少 <i></i><i></i><i></i><i></i> 多</span></div>
+      <div class="activity-tooltip" data-activity-tooltip role="tooltip" aria-hidden="true">
+        <span>PUBLICATION LOG</span>
+        <strong data-tooltip-date>{latestDay ? chineseDate(latestDay.date) : '暂无记录'}</strong>
+        <div class="tooltip-counts">
+          <span><i></i>笔记 <b data-tooltip-notes>{latestDay?.notes ?? 0}</b></span>
+          <span><i></i>随笔 <b data-tooltip-essays>{latestDay?.essays ?? 0}</b></span>
+          <span><i></i>Daily <b data-tooltip-daily>{latestDay?.daily ?? 0}</b></span>
+        </div>
+        <p data-tooltip-total>{latestDay?.total ? `共 ${latestDay.total} 次发布` : '这天还没有发布'}</p>
+      </div>
+      <div class="heat-foot">
+        <span data-activity-summary aria-live="polite">{summary(latestDay)}</span>
+        <span>少 <i></i><i></i><i></i><i></i> 多</span>
+      </div>
     </section>
   </div>
 </section>
+
+<script>
+  const panels = document.querySelectorAll<HTMLElement>('[data-activity-panel]');
+
+  for (const panel of panels) {
+    const tooltip = panel.querySelector<HTMLElement>('[data-activity-tooltip]');
+    const summary = panel.querySelector<HTMLElement>('[data-activity-summary]');
+    const scroller = panel.querySelector<HTMLElement>('[data-activity-scroll]');
+    const cells = panel.querySelectorAll<HTMLButtonElement>('[data-activity-cell]');
+    const defaultSummary = summary?.textContent ?? '';
+    if (!tooltip || !summary) continue;
+
+    const tooltipDate = tooltip.querySelector<HTMLElement>('[data-tooltip-date]');
+    const tooltipNotes = tooltip.querySelector<HTMLElement>('[data-tooltip-notes]');
+    const tooltipEssays = tooltip.querySelector<HTMLElement>('[data-tooltip-essays]');
+    const tooltipDaily = tooltip.querySelector<HTMLElement>('[data-tooltip-daily]');
+    const tooltipTotal = tooltip.querySelector<HTMLElement>('[data-tooltip-total]');
+
+    const formatDate = (date: string) => {
+      const [year, month, day] = date.split('-').map(Number);
+      return `${year}年${month}月${day}日`;
+    };
+
+    const show = (cell: HTMLButtonElement) => {
+      const { date = '', notes = '0', essays = '0', daily = '0', total = '0' } = cell.dataset;
+      if (tooltipDate) tooltipDate.textContent = formatDate(date);
+      if (tooltipNotes) tooltipNotes.textContent = notes;
+      if (tooltipEssays) tooltipEssays.textContent = essays;
+      if (tooltipDaily) tooltipDaily.textContent = daily;
+      if (tooltipTotal) tooltipTotal.textContent = Number(total) ? `共 ${total} 次发布` : '这天还没有发布';
+      summary.textContent = `${date.replaceAll('-', '.')} · 笔记 ${notes} · 随笔 ${essays} · Daily ${daily}`;
+
+      tooltip.dataset.visible = 'true';
+      tooltip.setAttribute('aria-hidden', 'false');
+
+      const panelRect = panel.getBoundingClientRect();
+      const cellRect = cell.getBoundingClientRect();
+      const tooltipWidth = tooltip.offsetWidth;
+      const tooltipHeight = tooltip.offsetHeight;
+      const idealLeft = cellRect.left - panelRect.left + cellRect.width / 2 - tooltipWidth / 2;
+      const left = Math.min(Math.max(8, idealLeft), panel.clientWidth - tooltipWidth - 8);
+      const above = cellRect.top - panelRect.top - tooltipHeight - 10;
+      const top = above >= 8 ? above : cellRect.bottom - panelRect.top + 10;
+
+      tooltip.style.setProperty('--tooltip-left', `${left}px`);
+      tooltip.style.setProperty('--tooltip-top', `${top}px`);
+    };
+
+    const hide = () => {
+      delete tooltip.dataset.visible;
+      tooltip.setAttribute('aria-hidden', 'true');
+      summary.textContent = defaultSummary;
+    };
+
+    if (scroller) scroller.scrollLeft = scroller.scrollWidth;
+
+    for (const cell of cells) {
+      cell.addEventListener('mouseenter', () => show(cell));
+      cell.addEventListener('mouseleave', () => {
+        if (document.activeElement !== cell) hide();
+      });
+      cell.addEventListener('focus', () => show(cell));
+      cell.addEventListener('blur', hide);
+    }
+  }
+</script>
 
 <style>
   .garden { border-top: 1px solid var(--line); padding: 30px 0 8px; }
@@ -60,18 +169,34 @@ const heat = Array.from({ length: 168 }, (_, index) => ({
   .tag-cloud a:hover { color: var(--coral); }
   .tag-cloud sup { margin-left: 3px; font: 400 7px 'DM Mono', monospace; }
   .tag-panel p { margin: 0; color: var(--muted); font-size: 11px; }
-  .heatmap { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); grid-auto-columns: 12px; gap: 3px; margin: 25px 0 14px; overflow: hidden; }
-  .heatmap span { width: 12px; height: 12px; border-radius: 2px; background: var(--soft); }
-  .heatmap span[data-level='1'] { background: color-mix(in srgb, var(--green) 30%, var(--soft)); }
-  .heatmap span[data-level='2'] { background: color-mix(in srgb, var(--green) 52%, var(--soft)); }
-  .heatmap span[data-level='3'] { background: color-mix(in srgb, var(--green) 74%, var(--soft)); }
-  .heatmap span[data-level='4'] { background: var(--green); }
-  .heat-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 9px; }
-  .heat-foot span:last-child { display: flex; align-items: center; gap: 5px; }
+  .heat-panel { position: relative; }
+  .heatmap-scroll { margin: 25px 0 14px; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+  .heatmap { display: grid; width: max-content; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); grid-auto-columns: 12px; gap: 3px; padding: 3px; }
+  .heatmap button { appearance: none; width: 12px; height: 12px; padding: 0; border: 0; border-radius: 2px; background: var(--soft); cursor: crosshair; transition: transform .16s ease, box-shadow .16s ease, background .2s ease; }
+  .heatmap button[data-level='1'] { background: color-mix(in srgb, var(--green) 30%, var(--soft)); }
+  .heatmap button[data-level='2'] { background: color-mix(in srgb, var(--green) 52%, var(--soft)); }
+  .heatmap button[data-level='3'] { background: color-mix(in srgb, var(--green) 74%, var(--soft)); }
+  .heatmap button[data-level='4'] { background: var(--green); }
+  .heatmap button:hover, .heatmap button:focus-visible { position: relative; z-index: 2; transform: scale(1.55); box-shadow: 0 0 0 1px var(--bg), 0 0 0 2px var(--green), 0 4px 12px color-mix(in srgb, var(--green) 28%, transparent); outline: none; }
+  .activity-tooltip { position: absolute; z-index: 5; left: var(--tooltip-left, 22px); top: var(--tooltip-top, 58px); width: min(230px, calc(100% - 16px)); padding: 13px 14px 11px; border: 1px solid color-mix(in srgb, var(--green) 42%, var(--line)); border-radius: 4px; background: color-mix(in srgb, var(--bg) 94%, var(--soft)); box-shadow: 0 12px 28px color-mix(in srgb, #000 18%, transparent); opacity: 0; visibility: hidden; transform: translateY(5px); pointer-events: none; transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+  .activity-tooltip[data-visible='true'] { opacity: 1; visibility: visible; transform: translateY(0); }
+  .activity-tooltip > span { display: block; margin-bottom: 5px; color: var(--green); font: 400 8px 'DM Mono', monospace; letter-spacing: .12em; }
+  .activity-tooltip > strong { display: block; color: var(--ink); font: 500 14px 'Noto Serif SC', serif; }
+  .tooltip-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 11px 0 8px; padding-top: 9px; border-top: 1px solid var(--line); }
+  .tooltip-counts span { color: var(--muted); font: 400 9px 'DM Mono', monospace; white-space: nowrap; }
+  .tooltip-counts i { display: inline-block; width: 5px; height: 5px; margin-right: 3px; border-radius: 50%; background: var(--green); }
+  .tooltip-counts span:nth-child(2) i { background: var(--coral); }
+  .tooltip-counts span:nth-child(3) i { background: var(--yellow); }
+  .tooltip-counts b { color: var(--ink); font-weight: 500; }
+  .activity-tooltip p { margin: 0; color: var(--muted); font: 400 9px 'DM Mono', monospace; }
+  .heat-foot { display: flex; min-height: 16px; align-items: center; justify-content: space-between; gap: 14px; font-size: 9px; }
+  .heat-foot > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .heat-foot span:last-child { display: flex; flex: 0 0 auto; align-items: center; gap: 5px; }
   .heat-foot i { width: 9px; height: 9px; background: var(--soft); }
   .heat-foot i:nth-child(2) { background: color-mix(in srgb, var(--green) 38%, var(--soft)); }
   .heat-foot i:nth-child(3) { background: color-mix(in srgb, var(--green) 67%, var(--soft)); }
   .heat-foot i:nth-child(4) { background: var(--green); }
   @media (max-width: 820px) { .data-grid { grid-template-columns: 1fr; } .tag-panel { border-right: 0; border-bottom: 1px solid var(--line); } }
-  @media (max-width: 520px) { .stats { grid-template-columns: repeat(2, 1fr); } .stats a:nth-child(2) { border-right: 0; } .stats a:nth-child(-n+2) { border-bottom: 1px solid var(--line); } .heatmap { grid-template-rows: repeat(7, 10px); grid-auto-columns: 10px; } .heatmap span { width: 10px; height: 10px; } }
+  @media (max-width: 520px) { .stats { grid-template-columns: repeat(2, 1fr); } .stats a:nth-child(2) { border-right: 0; } .stats a:nth-child(-n+2) { border-bottom: 1px solid var(--line); } .heatmap { grid-template-rows: repeat(7, 9px); grid-auto-columns: 9px; gap: 2px; } .heatmap button { width: 9px; height: 9px; } .heat-foot { align-items: flex-start; } .heat-foot > span:first-child { white-space: normal; } }
+  @media (prefers-reduced-motion: reduce) { .heatmap button, .activity-tooltip { transition: none; } .heatmap button:hover, .heatmap button:focus-visible { transform: none; } }
 </style>

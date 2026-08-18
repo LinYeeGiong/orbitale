@@ -6,6 +6,7 @@ import ContentOverview from '../components/ContentOverview.astro';
 import ExplorationOrbit from '../components/ExplorationOrbit.astro';
 import Hero from '../components/Hero.astro';
 import SiteShell from '../layouts/SiteShell.astro';
+import { buildActivityDays, type Publication } from '../lib/activity';
 
 const [notes, essays, daily] = await Promise.all([
   getCollection('notes', ({ data }) => data.published && data.lang === 'zh'),
@@ -20,6 +21,20 @@ for (const entry of [...notes, ...essays, ...daily]) {
 const tags = [...tagCounts.entries()]
   .map(([name, count]) => ({ name, count }))
   .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name, 'zh-CN'));
+
+const publications: Publication[] = [
+  ...notes.map(({ data }) => ({ date: data.date, kind: 'notes' as const })),
+  ...essays.map(({ data }) => ({ date: data.date, kind: 'essays' as const })),
+  ...daily.map(({ data }) => ({ date: data.date, kind: 'daily' as const })),
+];
+const latestPublicationDate = publications.reduce<Date | undefined>(
+  (latest, publication) => !latest || publication.date > latest ? publication.date : latest,
+  undefined,
+);
+const activityEndDate = latestPublicationDate ?? new Date();
+const activity = buildActivityDays(publications, activityEndDate, 24 * 7);
+const writingDays = new Set(publications.map(({ date }) => date.toISOString().slice(0, 10))).size;
+const updatedAt = activityEndDate.toISOString().slice(0, 10).replaceAll('-', '.');
 ---
 
 <SiteShell>
@@ -28,7 +43,15 @@ const tags = [...tagCounts.entries()]
       <Hero><CommandTerminal /></Hero>
       <ExplorationOrbit />
     </div>
-    <ContentOverview notes={notes.length} essays={essays.length} daily={daily.length} tags={tags} />
+    <ContentOverview
+      notes={notes.length}
+      essays={essays.length}
+      daily={daily.length}
+      tags={tags}
+      activity={activity}
+      writingDays={writingDays}
+      updatedAt={updatedAt}
+    />
   </main>
 </SiteShell>
 
