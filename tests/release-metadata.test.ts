@@ -14,7 +14,7 @@ describe('release metadata', () => {
 
     expect(pkg.version).toBe('0.2.1');
     expect(pkg.license).toBe('MIT');
-    expect(pkg.repository.url).toContain('LinYeeGiong/orbitale');
+    expect(pkg.repository.url).toContain('LinYeeGiong/AstroOrbitale');
     expect(pkg.keywords).toContain('astro-theme');
     expect(license).toContain('MIT License');
     expect(license).toContain('Copyright (c) 2026 Lin');

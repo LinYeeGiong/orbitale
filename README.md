@@ -5,14 +5,14 @@
   <p>
     <a href="https://linyeegiong.github.io/"><strong>Live Preview ↗</strong></a>
     ·
-    <a href="https://github.com/LinYeeGiong/orbitale#use-orbitale-as-a-template"><strong>Use This Template</strong></a>
+    <a href="https://github.com/LinYeeGiong/AstroOrbitale#use-orbitale-as-a-template"><strong>Use This Template</strong></a>
     ·
     <a href="README.zh-CN.md"><strong>中文文档</strong></a>
   </p>
   <p>
-    <a href="https://github.com/LinYeeGiong/orbitale/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/LinYeeGiong/orbitale?style=for-the-badge&label=release"></a>
-    <a href="https://github.com/LinYeeGiong/orbitale/actions/workflows/deploy.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/LinYeeGiong/orbitale/deploy.yml?branch=main&style=for-the-badge&label=build"></a>
-    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/LinYeeGiong/orbitale?style=for-the-badge"></a>
+    <a href="https://github.com/LinYeeGiong/AstroOrbitale/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/LinYeeGiong/AstroOrbitale?style=for-the-badge&label=release"></a>
+    <a href="https://github.com/LinYeeGiong/AstroOrbitale/actions/workflows/deploy.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/LinYeeGiong/AstroOrbitale/deploy.yml?branch=main&style=for-the-badge&label=build"></a>
+    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/LinYeeGiong/AstroOrbitale?style=for-the-badge"></a>
     <a href="https://astro.build/"><img alt="Astro 7" src="https://img.shields.io/badge/Astro-7-BC52EE?style=for-the-badge&logo=astro&logoColor=white"></a>
   </p>
 </div>
@@ -47,7 +47,7 @@ Orbitale is distributed as a GitHub Template. The recommended setup keeps the pu
 
 ## 🚀 Use Orbitale As A Template
 
-1. Open the [Orbitale repository](https://github.com/LinYeeGiong/orbitale).
+1. Open the [AstroOrbitale repository](https://github.com/LinYeeGiong/AstroOrbitale).
 2. Select **Use this template**, then **Create a new repository**.
 3. For a GitHub user site, name the repository `<username>.github.io`. For Lin, this is `LinYeeGiong.github.io`.
 4. Clone the new personal blog repository and install its dependencies.
@@ -211,7 +211,7 @@ For a user site named `<username>.github.io`, the final URL is `https://<usernam
 Add the public theme repository as `upstream` in the personal blog repository:
 
 ```bash
-git remote add upstream https://github.com/LinYeeGiong/orbitale.git
+git remote add upstream https://github.com/LinYeeGiong/AstroOrbitale.git
 git fetch upstream --tags
 ```
 
@@ -221,7 +221,7 @@ Review upstream changes before merging. Commit personal content first, and resol
 
 | Repository | Purpose |
 | --- | --- |
-| `LinYeeGiong/orbitale` | Public theme code, template defaults, and releases |
+| `LinYeeGiong/AstroOrbitale` | Public theme code, template defaults, and releases |
 | `LinYeeGiong/LinYeeGiong.github.io` | Personal configuration, articles, drafts, and media |
 
 Other users replace the account name while keeping the same separation.
@@ -234,4 +234,4 @@ The MIT license covers theme code only. Articles, notes, Daily entries, avatars,
 
 ## 📦 Release
 
-The current release is [`v0.2.1`](https://github.com/LinYeeGiong/orbitale/releases/tag/v0.2.1). It includes the v0.2 content model, permanent pages, tag archives, RSS, centralized configuration, release metadata, and the clean-checkout Astro content cache fix.
+The current release is [`v0.2.1`](https://github.com/LinYeeGiong/AstroOrbitale/releases/tag/v0.2.1). It includes the v0.2 content model, permanent pages, tag archives, RSS, centralized configuration, release metadata, and the clean-checkout Astro content cache fix.

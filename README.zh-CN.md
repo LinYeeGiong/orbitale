@@ -5,14 +5,14 @@
   <p>
     <a href="https://linyeegiong.github.io/"><strong>查看正式博客 ↗</strong></a>
     ·
-    <a href="https://github.com/LinYeeGiong/orbitale#use-orbitale-as-a-template"><strong>使用模板</strong></a>
+    <a href="https://github.com/LinYeeGiong/AstroOrbitale#use-orbitale-as-a-template"><strong>使用模板</strong></a>
     ·
     <a href="README.md"><strong>English README</strong></a>
   </p>
   <p>
-    <a href="https://github.com/LinYeeGiong/orbitale/releases"><img alt="最新版本" src="https://img.shields.io/github/v/release/LinYeeGiong/orbitale?style=for-the-badge&label=release"></a>
-    <a href="https://github.com/LinYeeGiong/orbitale/actions/workflows/deploy.yml"><img alt="构建状态" src="https://img.shields.io/github/actions/workflow/status/LinYeeGiong/orbitale/deploy.yml?branch=main&style=for-the-badge&label=build"></a>
-    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/LinYeeGiong/orbitale?style=for-the-badge"></a>
+    <a href="https://github.com/LinYeeGiong/AstroOrbitale/releases"><img alt="最新版本" src="https://img.shields.io/github/v/release/LinYeeGiong/AstroOrbitale?style=for-the-badge&label=release"></a>
+    <a href="https://github.com/LinYeeGiong/AstroOrbitale/actions/workflows/deploy.yml"><img alt="构建状态" src="https://img.shields.io/github/actions/workflow/status/LinYeeGiong/AstroOrbitale/deploy.yml?branch=main&style=for-the-badge&label=build"></a>
+    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/LinYeeGiong/AstroOrbitale?style=for-the-badge"></a>
     <a href="https://astro.build/"><img alt="Astro 7" src="https://img.shields.io/badge/Astro-7-BC52EE?style=for-the-badge&logo=astro&logoColor=white"></a>
   </p>
 </div>
@@ -47,7 +47,7 @@ Orbitale 是静态站点主题，不是托管式博客服务。你拥有自己�
 
 ## 🚀 使用模板
 
-1. 打开 [Orbitale 仓库](https://github.com/LinYeeGiong/orbitale)。
+1. 打开 [AstroOrbitale 仓库](https://github.com/LinYeeGiong/AstroOrbitale)。
 2. 点击 **Use this template**，然后选择 **Create a new repository**。
 3. 如果要使用 GitHub 用户主页，仓库命名为 `<username>.github.io`。Lin 的个人博客仓库是 `LinYeeGiong.github.io`。
 4. 克隆新建的个人博客仓库并安装依赖。
@@ -211,7 +211,7 @@ images: [/images/daily/2026-08-17/lab.jpg]
 在个人博客仓库中添加主题上游：
 
 ```bash
-git remote add upstream https://github.com/LinYeeGiong/orbitale.git
+git remote add upstream https://github.com/LinYeeGiong/AstroOrbitale.git
 git fetch upstream --tags
 ```
 
@@ -221,7 +221,7 @@ git fetch upstream --tags
 
 | 仓库 | 用途 |
 | --- | --- |
-| `LinYeeGiong/orbitale` | 公开主题代码、模板默认值和版本发布 |
+| `LinYeeGiong/AstroOrbitale` | 公开主题代码、模板默认值和版本发布 |
 | `LinYeeGiong/LinYeeGiong.github.io` | 个人配置、文章、草稿和媒体 |
 
 其他用户只需把用户名替换为自己的账号，模型保持不变。
@@ -232,4 +232,4 @@ Orbitale 主题代码使用 [MIT License](LICENSE)。MIT 只覆盖主题代码�
 
 ## 📦 发布版本
 
-当前版本是 [`v0.2.1`](https://github.com/LinYeeGiong/orbitale/releases/tag/v0.2.1)，包含 v0.2 的内容模型、永久页面、标签归档、RSS、集中式配置、发布元数据，以及干净 checkout 下的 Astro 内容缓存修复。
+当前版本是 [`v0.2.1`](https://github.com/LinYeeGiong/AstroOrbitale/releases/tag/v0.2.1)，包含 v0.2 的内容模型、永久页面、标签归档、RSS、集中式配置、发布元数据，以及干净 checkout 下的 Astro 内容缓存修复。
