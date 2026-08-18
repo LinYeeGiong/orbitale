@@ -31,8 +31,12 @@ const pageTitle = title === siteConfig.title ? title : `${title} · ${siteConfig
       <Header />
       <slot />
       <footer class="site-footer">
-        <span>© 2026 LIN · SHANGHAI / UTC+8</span>
-        <nav aria-label="页脚导航"><a href="https://github.com/" rel="me">GITHUB</a><a href="/rss.xml">RSS</a><a href="#top">TOP ↑</a></nav>
+        <span>© {new Date().getFullYear()} {siteConfig.footer.copyright} · {siteConfig.location}</span>
+        <nav aria-label="页脚导航">
+          {siteConfig.footer.links.map((link) => (
+            <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'me noreferrer' : undefined}>{link.label}</a>
+          ))}
+        </nav>
       </footer>
     </div>
   </body>

@@ -1,30 +1,33 @@
 ---
-const fields = [
-  { key: 'agents', label: 'AI AGENTS', count: 18, title: '智能体与协作', description: '记录 Agent Memory、工具调用，以及人如何与 AI 共同完成长期工作。', latest: '让 Agent 记住真正重要的事', href: '/notes/' },
-  { key: 'systems', label: '系统', count: 12, title: '系统与工程', description: '从实验环境到稳定部署，留下故障、取舍和可复用的工程判断。', latest: '一次失败部署留下的检查清单', href: '/notes/' },
-  { key: 'writing', label: '写作', count: 16, title: '写作与思考', description: '用公开写作整理尚未完成的想法，也记录观点如何随时间改变。', latest: '写博客不是为了证明已经想明白', href: '/essays/' },
-  { key: 'reading', label: '阅读', count: 14, title: '阅读与摘记', description: '不只收藏答案：重述一本书，连接旧问题，再形成自己的判断。', latest: '读《设计心理学》', href: '/notes/' },
-  { key: 'life', label: '生活影像', count: 23, title: '生活与影像', description: '实验室、街道、光线和微小日常，构成技术之外的生活切片。', latest: '实验室的下午四点', href: '/daily/' },
-] as const;
+import type { ExplorationFieldStats } from '../lib/content';
+
+interface Props {
+  identity: string;
+  fields: ExplorationFieldStats[];
+}
+
+const { identity, fields } = Astro.props;
+const firstField = fields[0];
+const fieldTotal = String(fields.length).padStart(2, '0');
 ---
 
-<aside class="orbit-panel" data-exploration-orbit aria-label="Lin 的探索方向">
+<aside class="orbit-panel" data-exploration-orbit data-field-total={fieldTotal} aria-label={`${identity} 的探索方向`}>
   <div class="orbit" data-orbit-surface>
     <span class="ring ring-outer" aria-hidden="true"></span>
     <span class="ring ring-inner" aria-hidden="true"></span>
     <span class="active-beam" aria-hidden="true"></span>
     <span class="pointer" data-orbit-pointer aria-hidden="true"></span>
-    <div class="orbit-core"><strong>LIN</strong><span>05 FIELDS / LIVE</span></div>
+    <div class="orbit-core"><strong>{identity}</strong><span>{fieldTotal} FIELDS / LIVE</span></div>
     {fields.map((field, index) => (
       <button
         type="button"
         class="topic"
-        data-topic={field.key}
+        data-topic={field.id}
         data-index={index + 1}
         data-count={field.count}
         data-title={field.title}
         data-description={field.description}
-        data-latest={field.latest}
+        data-latest={field.latest ?? '暂无发布记录'}
         data-href={field.href}
         aria-pressed={index === 0 ? 'true' : 'false'}
       >
@@ -33,12 +36,14 @@ const fields = [
       </button>
     ))}
   </div>
-  <section class="field-detail" aria-live="polite">
-    <div class="field-meta"><span data-field-index>FIELD 01 / 05</span><span data-field-state>当前方向</span></div>
-    <div class="field-title"><h2 data-field-title>智能体与协作</h2><strong><span data-field-count>18</span> <small>篇文章</small></strong></div>
-    <p data-field-description>记录 Agent Memory、工具调用，以及人如何与 AI 共同完成长期工作。</p>
-    <div class="field-foot"><span data-field-latest>最近更新 · 让 Agent 记住真正重要的事</span><a data-field-link href="/notes/">查看方向 →</a></div>
-  </section>
+  {firstField && (
+    <section class="field-detail" aria-live="polite">
+      <div class="field-meta"><span data-field-index>FIELD 01 / {fieldTotal}</span><span data-field-state>当前方向</span></div>
+      <div class="field-title"><h2 data-field-title>{firstField.title}</h2><strong><span data-field-count>{firstField.count}</span> <small>篇文章</small></strong></div>
+      <p data-field-description>{firstField.description}</p>
+      <div class="field-foot"><span data-field-latest>最近更新 · {firstField.latest ?? '暂无发布记录'}</span><a data-field-link href={firstField.href}>查看方向 →</a></div>
+    </section>
+  )}
 </aside>
 
 <script>
@@ -51,6 +56,7 @@ const fields = [
     if (!surface || !pointer || topics.length === 0) return;
 
     let active = topics[0];
+    const fieldTotal = root.dataset.fieldTotal ?? String(topics.length).padStart(2, '0');
 
     const pointTo = (x: number, y: number) => {
       const rect = surface.getBoundingClientRect();
@@ -73,7 +79,7 @@ const fields = [
     };
 
     const renderTopic = (topic: HTMLButtonElement, preview: boolean) => {
-      root.querySelector<HTMLElement>('[data-field-index]')!.textContent = `FIELD ${String(topic.dataset.index).padStart(2, '0')} / 05`;
+      root.querySelector<HTMLElement>('[data-field-index]')!.textContent = `FIELD ${String(topic.dataset.index).padStart(2, '0')} / ${fieldTotal}`;
       root.querySelector<HTMLElement>('[data-field-state]')!.textContent = preview ? '预览方向' : '当前方向';
       root.querySelector<HTMLElement>('[data-field-title]')!.textContent = topic.dataset.title ?? '';
       root.querySelector<HTMLElement>('[data-field-count]')!.textContent = topic.dataset.count ?? '0';

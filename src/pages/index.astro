@@ -5,8 +5,10 @@ import CommandTerminal from '../components/CommandTerminal.astro';
 import ContentOverview from '../components/ContentOverview.astro';
 import ExplorationOrbit from '../components/ExplorationOrbit.astro';
 import Hero from '../components/Hero.astro';
+import { siteConfig } from '../config/site';
 import SiteShell from '../layouts/SiteShell.astro';
 import { buildActivityDays, type Publication } from '../lib/activity';
+import { buildExplorationStats, type ContentRecord } from '../lib/content';
 
 const [notes, essays, daily] = await Promise.all([
   getCollection('notes', ({ data }) => data.published && data.lang === 'zh'),
@@ -27,6 +29,12 @@ const publications: Publication[] = [
   ...essays.map(({ data }) => ({ date: data.date, kind: 'essays' as const })),
   ...daily.map(({ data }) => ({ date: data.date, kind: 'daily' as const })),
 ];
+const contentRecords: ContentRecord[] = [
+  ...notes.map(({ id, data }) => ({ id, kind: 'notes' as const, title: data.title, description: data.description, date: data.date, tags: data.tags })),
+  ...essays.map(({ id, data }) => ({ id, kind: 'essays' as const, title: data.title, description: data.description, date: data.date, tags: data.tags })),
+  ...daily.map(({ id, data }) => ({ id, kind: 'daily' as const, title: data.title, description: data.description, date: data.date, tags: data.tags })),
+];
+const explorationFields = buildExplorationStats(siteConfig.exploration, contentRecords);
 const latestPublicationDate = publications.reduce<Date | undefined>(
   (latest, publication) => !latest || publication.date > latest ? publication.date : latest,
   undefined,
@@ -40,8 +48,13 @@ const updatedAt = activityEndDate.toISOString().slice(0, 10).replaceAll('-', '.'
 <SiteShell>
   <main class="page-main" id="top">
     <div class="home-grid">
-      <Hero><CommandTerminal /></Hero>
-      <ExplorationOrbit />
+      <Hero>
+        <CommandTerminal
+          explorationCount={explorationFields[0]?.count ?? 0}
+          explorationLabel={explorationFields[0]?.label}
+        />
+      </Hero>
+      <ExplorationOrbit identity={siteConfig.shortName} fields={explorationFields} />
     </div>
     <ContentOverview
       notes={notes.length}

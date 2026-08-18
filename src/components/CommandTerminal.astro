@@ -1,16 +1,35 @@
-<section class="terminal" data-command-terminal aria-label="Lin command line">
-  <header><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="title">lin@garden — zsh</span><span class="session">SESSION 01</span></header>
+---
+import { siteConfig } from '../config/site';
+
+interface Props {
+  explorationCount?: number;
+  explorationLabel?: string;
+}
+
+const { explorationCount = 0, explorationLabel = siteConfig.exploration[0].label } = Astro.props;
+const prompt = `${siteConfig.terminal.user}@${siteConfig.terminal.host} ~ %`;
+---
+
+<section
+  class="terminal"
+  data-command-terminal
+  data-prompt={prompt}
+  data-explore-count={explorationCount}
+  data-explore-label={explorationLabel}
+  aria-label={`${siteConfig.name} command line`}
+>
+  <header><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="title">{siteConfig.terminal.shellTitle}</span><span class="session">{siteConfig.terminal.session}</span></header>
   <div class="terminal-body" data-terminal-output>
-    <div class="line"><span class="prompt">lin@lab ~ %</span><span>/help</span></div>
-    <div class="output">routes: /about /notes /essays /daily /explore · /clear</div>
+    <div class="line"><span class="prompt">{prompt}</span><span>/help</span></div>
+    <div class="output">{siteConfig.terminal.welcome}</div>
     <form data-terminal-form>
-      <span class="prompt">lin@lab ~ %</span>
-      <input data-terminal-input aria-label="Terminal command" autocomplete="off" spellcheck="false" placeholder="try /explore" />
+      <span class="prompt">{prompt}</span>
+      <input data-terminal-input aria-label="Terminal command" autocomplete="off" spellcheck="false" placeholder={siteConfig.terminal.placeholder} />
       <span class="block-cursor" data-terminal-cursor aria-hidden="true"></span>
     </form>
   </div>
   <div class="shortcuts" aria-label="快捷命令">
-    {['/about', '/notes', '/essays', '/daily', '/explore'].map((command) => <button type="button" data-command={command}>{command}</button>)}
+    {siteConfig.terminal.shortcuts.map((command) => <button type="button" data-command={command}>{command}</button>)}
   </div>
 </section>
 
@@ -23,6 +42,10 @@
     const input = root.querySelector<HTMLInputElement>('[data-terminal-input]');
     const cursor = root.querySelector<HTMLElement>('[data-terminal-cursor]');
     if (!outputRoot || !form || !input || !cursor) return;
+
+    const promptText = root.dataset.prompt ?? '';
+    const exploreCount = root.dataset.exploreCount ?? '0';
+    const exploreLabel = root.dataset.exploreLabel ?? 'EXPLORE';
 
     const history: string[] = [];
     let historyIndex = 0;
@@ -41,7 +64,7 @@
       line.className = 'line';
       const prompt = document.createElement('span');
       prompt.className = 'prompt';
-      prompt.textContent = 'lin@lab ~ %';
+      prompt.textContent = promptText;
       const value = document.createElement('span');
       value.textContent = command;
       line.append(prompt, value);
@@ -62,7 +85,7 @@
         print(result.command, `opening ${result.route}`);
         window.setTimeout(() => window.location.assign(result.route), 180);
       } else if (result.kind === 'explore') {
-        print(result.command, 'exploration orbit activated · AI Agents / 18 articles');
+        print(result.command, `exploration orbit activated · ${exploreLabel} / ${exploreCount} articles`);
         window.dispatchEvent(new CustomEvent('orbitale:explore'));
       } else if (result.kind === 'help') {
         print(result.command, `available: ${result.commands.join(' ')}`);

@@ -1,11 +1,15 @@
+---
+import { siteConfig } from '../config/site';
+---
+
 <section class="hero-copy" aria-labelledby="home-title">
   <div>
-    <p class="hero-overline">Research · Code · Everyday</p>
-    <h1 id="home-title">把世界<br />写成<span>笔记</span></h1>
+    <p class="hero-overline">{siteConfig.hero.overline}</p>
+    <h1 id="home-title">{siteConfig.hero.headlineTop}<br />{siteConfig.hero.headlineBeforeAccent}<span>{siteConfig.hero.headlineAccent}</span></h1>
   </div>
   <div class="hero-intro">
-    <p>我记录正在学习的技术、实验里发生的问题，以及那些值得慢慢想清楚的日常。这里不是简历，是一份持续更新的个人档案。</p>
-    <a href="/about/">进入我的世界 <span aria-hidden="true">→</span></a>
+    <p>{siteConfig.hero.intro}</p>
+    <a href={siteConfig.hero.ctaHref}>{siteConfig.hero.cta} <span aria-hidden="true">→</span></a>
   </div>
   <slot />
 </section>

@@ -1,8 +1,9 @@
 ---
 import SiteShell from '../layouts/SiteShell.astro';
+import { siteConfig } from '../config/site';
 ---
 
-<SiteShell title="关于我" description="关于 Lin 的研究、工程、写作与个人记录。">
+<SiteShell title="关于我" description={`关于 ${siteConfig.name} 的研究、工程、写作与个人记录。`}>
   <main class="page-main">
     <header class="page-heading"><span>01 / ABOUT</span><h1>关于我</h1></header>
     <section class="about-layout">

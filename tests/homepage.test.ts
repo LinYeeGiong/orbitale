@@ -24,6 +24,8 @@ describe('Orbitale homepage', () => {
     expect(html).toContain('data-exploration-orbit');
     expect(html).toContain('data-command-terminal');
     expect(html).toContain('AI AGENTS');
+    expect(html).toContain('data-count="1"');
+    expect(html).toContain('lin@lab ~ %');
   });
 
   it('renders publishing statistics from the content collections', () => {
