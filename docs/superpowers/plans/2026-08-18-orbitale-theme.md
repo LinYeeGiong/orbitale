@@ -6,7 +6,7 @@
 
 **Architecture:** Astro renders a static Chinese-first site from validated content collections. Focused Astro components own layout and presentation; testable framework-free TypeScript modules own orbit geometry and terminal command behavior.
 
-**Tech Stack:** Astro 5, TypeScript, Vitest, Astro content collections, GitHub Actions, CSS custom properties
+**Tech Stack:** Astro 7, TypeScript, Vitest, Astro content collections, GitHub Actions, CSS custom properties
 
 ## Global Constraints
 
