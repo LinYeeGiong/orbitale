@@ -17,7 +17,7 @@
   </p>
 </div>
 
-> 正式预览地址是 [Lin / Lab Notes](https://linyeegiong.github.io/)，这是运行 Orbitale 的个人博客。`orbitale` 仓库本身是可复用的主题和模板。
+> 正式预览地址是 [Lin / Lab Notes](https://linyeegiong.github.io/)，这是运行 Orbitale 的个人博客。`AstroOrbitale` 仓库本身是可复用的主题和模板。
 
 ## ✦ 项目简介
 

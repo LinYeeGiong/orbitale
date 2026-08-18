@@ -17,7 +17,7 @@
   </p>
 </div>
 
-> The official preview is [Lin / Lab Notes](https://linyeegiong.github.io/), the live personal site running Orbitale. The `orbitale` repository is the reusable theme and template.
+> The official preview is [Lin / Lab Notes](https://linyeegiong.github.io/), the live personal site running Orbitale. The `AstroOrbitale` repository is the reusable theme and template.
 
 ## ✦ About
 
