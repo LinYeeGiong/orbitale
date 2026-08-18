@@ -24,7 +24,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest",
+    "test": "astro sync && vitest",
     "verify": "npm test -- --run && npm run check && npm run build",
     "astro": "astro"
   },
