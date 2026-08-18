@@ -6,10 +6,22 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
-const { title = siteConfig.title, description = siteConfig.description } = Astro.props;
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  canonical,
+  ogType = 'website',
+  publishedTime,
+  jsonLd,
+} = Astro.props;
 const pageTitle = title === siteConfig.title ? title : `${title} · ${siteConfig.name}`;
+const pageUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
 ---
 
 <!doctype html>
@@ -19,8 +31,15 @@ const pageTitle = title === siteConfig.title ? title : `${title} · ${siteConfig
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={pageUrl} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle}</title>
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <script is:inline>
       const storedTheme = localStorage.getItem('orbitale-theme');
       if (storedTheme === 'light') document.documentElement.dataset.theme = 'light';

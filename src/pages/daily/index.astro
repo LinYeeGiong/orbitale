@@ -1,15 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
 import SiteShell from '../../layouts/SiteShell.astro';
+import { getContentPath, isPublishedChinese } from '../../lib/content';
 
-const entries = (await getCollection('daily', ({ data }) => data.published && data.lang === 'zh')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const entries = (await getCollection('daily', isPublishedChinese)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <SiteShell title="生活切片">
   <main class="page-main">
     <header class="page-heading"><span>04 / DAILY</span><h1>生活切片</h1></header>
     <section class="timeline" aria-label="Daily 时间线">
-      {entries.map((entry) => <article><time datetime={entry.data.date.toISOString()}>{entry.data.date.toLocaleDateString('zh-CN')} · {entry.data.location ?? 'SOMEWHERE'}</time><blockquote>{entry.data.description}</blockquote><div>{entry.data.tags.map((tag) => <span>#{tag}</span>)}</div></article>)}
+      {entries.map((entry) => <article><time datetime={entry.data.date.toISOString()}>{entry.data.date.toLocaleDateString('zh-CN')} · {entry.data.location ?? 'SOMEWHERE'}</time><a class="daily-entry" href={getContentPath('daily', entry.id)}><h2>{entry.data.title}</h2><blockquote>{entry.data.description}</blockquote><span>阅读这条记录 →</span></a><div>{entry.data.tags.map((tag) => <span>#{tag}</span>)}</div></article>)}
     </section>
   </main>
 </SiteShell>
@@ -19,7 +20,11 @@ const entries = (await getCollection('daily', ({ data }) => data.published && da
   article { position: relative; padding: 0 0 44px 34px; border-left: 1px solid var(--line); }
   article::before { content: ''; position: absolute; left: -5px; top: 2px; width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 5px color-mix(in srgb, var(--cyan) 14%, transparent); }
   time { color: var(--cyan); font: 400 10px 'DM Mono', monospace; }
-  blockquote { margin: 17px 0 20px; font: 500 27px/1.4 'Noto Serif SC', serif; }
+  .daily-entry { display: block; margin: 17px 0 20px; }
+  .daily-entry h2 { margin: 0 0 8px; font: 500 14px 'DM Mono', monospace; color: var(--muted); }
+  blockquote { margin: 0 0 10px; font: 500 27px/1.4 'Noto Serif SC', serif; }
+  .daily-entry > span { color: var(--coral); font: 400 9px 'DM Mono', monospace; }
+  .daily-entry:hover blockquote { color: var(--coral); }
   article div { display: flex; gap: 9px; color: var(--muted); font: 400 9px 'DM Mono', monospace; }
   @media (max-width: 700px) { .timeline { padding-left: 0; } }
 </style>

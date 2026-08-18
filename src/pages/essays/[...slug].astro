@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getAdjacentRecords, isPublishedChinese, type ContentRecord } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('essays', isPublishedChinese);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'essays'>;
+}
+
+const { entry } = Astro.props;
+const entries = await getCollection('essays', isPublishedChinese);
+const records: ContentRecord[] = entries.map(({ id, data }) => ({
+  id,
+  kind: 'essays',
+  title: data.title,
+  description: data.description,
+  date: data.date,
+  tags: data.tags,
+}));
+const { previous, next } = getAdjacentRecords(records, entry.id);
+const { Content } = await render(entry);
+---
+
+<ArticleLayout {entry} kind="essays" {previous} {next}><Content /></ArticleLayout>
