@@ -1,36 +1,51 @@
 # Orbitale
 
-Orbitale is a Chinese-first Astro theme for personal digital gardens. It gives technical notes, essays, daily observations, and connected ideas one quiet, durable home.
+<div align="center">
+  <p><strong>A Chinese-first Astro theme for personal digital gardens.</strong></p>
+  <p>
+    <a href="https://linyeegiong.github.io/"><strong>Live Preview ↗</strong></a>
+    ·
+    <a href="https://github.com/LinYeeGiong/orbitale#use-orbitale-as-a-template"><strong>Use This Template</strong></a>
+    ·
+    <a href="README.zh-CN.md"><strong>中文文档</strong></a>
+  </p>
+  <p>
+    <a href="https://github.com/LinYeeGiong/orbitale/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/LinYeeGiong/orbitale?style=for-the-badge&label=release"></a>
+    <a href="https://github.com/LinYeeGiong/orbitale/actions/workflows/deploy.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/LinYeeGiong/orbitale/deploy.yml?branch=main&style=for-the-badge&label=build"></a>
+    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/LinYeeGiong/orbitale?style=for-the-badge"></a>
+    <a href="https://astro.build/"><img alt="Astro 7" src="https://img.shields.io/badge/Astro-7-BC52EE?style=for-the-badge&logo=astro&logoColor=white"></a>
+  </p>
+</div>
 
-Current release: `v0.2.1` | [中文文档](README.zh-CN.md)
+> The official preview is [Lin / Lab Notes](https://linyeegiong.github.io/), the live personal site running Orbitale. The `orbitale` repository is the reusable theme and template.
 
-## About
+## ✦ About
 
 Orbitale is a static-site theme, not a hosted blogging service. You own the repository, content, and deployment. The theme provides a distinctive homepage, permanent article URLs, accessible interactions, RSS, and a small configuration surface.
 
 Orbitale is distributed as a GitHub Template. The recommended setup keeps the public theme repository separate from the personal blog repository that contains your writing.
 
-## Features
+## 🔥 Features
 
-- Astro 7, TypeScript, and static output.
-- Chinese-first `notes`, `essays`, and `daily` content collections.
-- Permanent article pages with canonical metadata, Open Graph, JSON-LD, and adjacent navigation.
-- Interactive exploration orbit backed by real tags and publication counts.
-- Writing activity overview and tag archives.
-- Keyboard-accessible command-line navigation.
-- Light and dark themes with reduced-motion support.
-- Combined summary RSS feed at `/rss.xml`.
-- GitHub Pages deployment workflow.
-- One personalization entry point: `src/config/site.ts`.
-- MIT-licensed theme code with a separate copyright boundary for user content.
+- [x] Astro 7, TypeScript, and static output.
+- [x] Chinese-first `notes`, `essays`, and `daily` content collections.
+- [x] Permanent article pages with canonical metadata, Open Graph, JSON-LD, and adjacent navigation.
+- [x] Interactive exploration orbit backed by real tags and publication counts.
+- [x] Writing activity overview and tag archives.
+- [x] Keyboard-accessible command-line navigation.
+- [x] Light and dark themes with reduced-motion support.
+- [x] Combined summary RSS feed at `/rss.xml`.
+- [x] GitHub Pages deployment workflow.
+- [x] One personalization entry point: `src/config/site.ts`.
+- [x] MIT-licensed theme code with a separate copyright boundary for user content.
 
-## Requirements
+## ✅ Requirements
 
 - Node.js `22.12.0` or newer.
 - npm.
 - A public GitHub repository for GitHub Pages deployment.
 
-## Use Orbitale As A Template
+## 🚀 Use Orbitale As A Template
 
 1. Open the [Orbitale repository](https://github.com/LinYeeGiong/orbitale).
 2. Select **Use this template**, then **Create a new repository**.
@@ -47,7 +62,7 @@ npm run dev
 
 The theme and personal blog repositories are intentionally separate. Theme updates can be reviewed without mixing them with private drafts or personal media.
 
-## Quick Start
+## 💻 Quick Start
 
 ```bash
 npm install
@@ -62,7 +77,7 @@ npm run verify
 
 Start customization in [`src/config/site.ts`](src/config/site.ts). It contains the site identity, URLs, hero copy, navigation, terminal identity, exploration fields, and footer links.
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```text
 .
@@ -85,7 +100,7 @@ Start customization in [`src/config/site.ts`](src/config/site.ts). It contains t
 └── package.json
 ```
 
-## Configure Your Site
+## ⚙️ Configure Your Site
 
 Edit [`src/config/site.ts`](src/config/site.ts) instead of searching components for personal copy.
 
@@ -110,7 +125,7 @@ repository: 'https://github.com/<username>/<username>.github.io',
 
 `PUBLIC_SITE_URL` can override `siteUrl` during a build. The exploration orbit derives counts and latest titles from published entries; `exploration[].tags` only defines which tags belong to each field.
 
-## Write Content
+## ✍️ Write Content
 
 Write Markdown or MDX in:
 
@@ -167,7 +182,7 @@ images: [/images/daily/2026-08-17/lab.jpg]
 
 Use `published: false` for local drafts. Store static images in `public/images/` and reference them with `/images/...` paths. The files currently in `src/content/` are demonstration material and should be replaced in a personal blog repository.
 
-## Commands
+## 🧞 Commands
 
 | Command | Action |
 | --- | --- |
@@ -179,7 +194,7 @@ Use `published: false` for local drafts. Store static images in `public/images/`
 | `npm run verify` | Run tests, diagnostics, and the production build |
 | `npm run preview` | Preview the production build locally |
 
-## Deploy To GitHub Pages
+## 🚀 Deploy To GitHub Pages
 
 The repository includes `.github/workflows/deploy.yml`.
 
@@ -191,7 +206,7 @@ The repository includes `.github/workflows/deploy.yml`.
 
 For a user site named `<username>.github.io`, the final URL is `https://<username>.github.io/`. The workflow passes the Pages origin to Astro for canonical metadata and RSS.
 
-## Update From Upstream
+## 🔄 Update From Upstream
 
 Add the public theme repository as `upstream` in the personal blog repository:
 
@@ -202,7 +217,7 @@ git fetch upstream --tags
 
 Review upstream changes before merging. Commit personal content first, and resolve conflicts in `src/config/site.ts` and `src/content/` in favor of the personal blog repository.
 
-## Repository Model
+## 🧭 Repository Model
 
 | Repository | Purpose |
 | --- | --- |
@@ -211,12 +226,12 @@ Review upstream changes before merging. Commit personal content first, and resol
 
 Other users replace the account name while keeping the same separation.
 
-## License And Content Copyright
+## 📜 License And Content Copyright
 
 Orbitale theme code is licensed under the [MIT License](LICENSE).
 
 The MIT license covers theme code only. Articles, notes, Daily entries, avatars, photographs, and other personal media remain the copyright of their respective authors unless separately licensed. Using Orbitale does not relicense blog content as MIT.
 
-## Release
+## 📦 Release
 
 The current release is [`v0.2.1`](https://github.com/LinYeeGiong/orbitale/releases/tag/v0.2.1). It includes the v0.2 content model, permanent pages, tag archives, RSS, centralized configuration, release metadata, and the clean-checkout Astro content cache fix.
