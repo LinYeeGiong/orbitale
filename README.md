@@ -1,4 +1,4 @@
-# Orbitale
+# AstroOrbitale
 
 <div align="center">
   <p><strong>A Chinese-first Astro theme for personal digital gardens.</strong></p>
