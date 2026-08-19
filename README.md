@@ -1,5 +1,9 @@
 # AstroOrbitale
 
+<p align="center">
+  <img src="docs/images/astroorbitale-preview.png" alt="AstroOrbitale homepage preview" width="100%" />
+</p>
+
 <div align="center">
   <p><strong>A Chinese-first Astro theme for personal digital gardens.</strong></p>
   <p>

@@ -1,4 +1,8 @@
-# Orbitale 中文文档
+# AstroOrbitale 中文文档
+
+<p align="center">
+  <img src="docs/images/astroorbitale-preview.png" alt="AstroOrbitale 首页预览" width="100%" />
+</p>
 
 <div align="center">
   <p><strong>一个中文优先的 Astro 个人数字花园主题。</strong></p>
